@@ -39,13 +39,31 @@ body {
 
 .ascii-header {
   color: var(--ascii-color);
-  font-family: "Geist Mono", var(--font-mono), monospace;
-  white-space: pre;
-  line-height: 1.2;
   margin-bottom: 2rem;
-  text-align: center;
   font-size: 0.6rem;
   opacity: 0.8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ascii-header > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ascii-header pre {
+  display: inline-block;
+}
+
+.ascii-header pre:first-child {
+  text-align: left;
+}
+
+.ascii-header pre:last-child {
+  text-align: center;
+  width: 100%;
 }
 
 @media (min-width: 640px) {
@@ -102,94 +120,186 @@ input::placeholder {
 
 /* Button styles */
 button {
-  background-color: var(--button-bg);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--button-text);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 500;
   margin-top: 8px;
-  font-family: var(--font-mono), "Geist Mono", monospace;
+  font-family: var(--font-sans), "Geist Sans", sans-serif;
   font-size: 0.95rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 button:hover {
-  background-color: var(--button-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+button:hover::before {
+  opacity: 1;
+}
+
+button:active {
+  transform: translateY(1px);
 }
 
 button:disabled {
-  background-color: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.05);
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.6;
   transform: none;
-  box-shadow: none;
 }
 
-/* Generate Options button */
+/* Primary action button */
 .generate-options-button {
-  background: linear-gradient(45deg, #ff00ff, #00ffff);
-  color: white;
-  font-family: var(--font-sans), "Geist Sans", sans-serif;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  color: #fff;
   font-weight: 600;
-  padding: 12px 24px;
-  border-radius: 9999px;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
 }
 
-.generate-options-button::before {
-  content: "";
+.generate-options-button::after {
+  content: '';
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
-  z-index: -1;
-  filter: blur(10px);
+  inset: -1px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
   opacity: 0;
-  transition: opacity 0.3s ease;
-  border-radius: 9999px;
-}
-
-.generate-options-button:hover::before {
-  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  z-index: -1;
+  border-radius: 11px;
 }
 
 .generate-options-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.generate-options-button:hover::after {
+  opacity: 0.15;
+}
+
+/* Terminal structure */
+.terminal-frame {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.terminal-header {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.terminal-content {
+  padding: 20px;
+}
+
+/* Options display */
+.options-container {
+  margin-top: 24px;
+}
+
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.option-item {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  font-family: var(--font-mono);
+  transition: all 0.2s ease;
+}
+
+.option-item:hover {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.option-text {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Button group for tweet options */
 .button-group {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
-.modify-button {
-  background-color: #333333;
-  border-radius: 9999px;
+.button-container {
+  margin-top: 16px;
 }
 
-.modify-button:hover {
-  background-color: #444444;
-  transform: translateY(-1px);
-}
-
+.modify-button,
 .select-button {
-  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
 }
 
+.modify-button:hover,
 .select-button:hover {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-1px);
+}
+
+.modify-button:active,
+.select-button:active {
+  transform: translateY(0);
+}
+
+/* Refined message styles */
+.refined-container {
+  margin-top: 24px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.refined-message {
+  margin-bottom: 16px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-mono);
 }
 
 ul {

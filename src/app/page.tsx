@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 
 interface Option {
@@ -19,9 +19,8 @@ interface ApiError {
 }
 
 // ASCII Art components
-const AsciiLogo = () => (
-  <div className="ascii-header" style={{ fontFamily: "Geist Mono" }}>
-    {`
+const AsciiLogo = () => {
+  const asciiArt = `
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠳⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⣀⡴⢧⣀⠀⠀⣀⣠⠤⠤⠤⠤⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -37,19 +36,62 @@ const AsciiLogo = () => (
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 @source_os v3.2
 [only mei]
-                                              
-`}
-  </div>
-)
+`;
+
+  // Split the ASCII art and text portions
+  const [artPortion, textPortion] = asciiArt.split('@source_os');
+  
+  return (
+    <div className="ascii-header">
+      <div>
+        <pre style={{ 
+          fontFamily: "Geist Mono",
+          margin: 0,
+          whiteSpace: "pre",
+          lineHeight: 1.2
+        }}>
+          {artPortion}
+        </pre>
+        <pre style={{ 
+          fontFamily: "Geist Mono",
+          margin: 0,
+          whiteSpace: "pre",
+          lineHeight: 1.2,
+          textAlign: "center"
+        }}>
+          @source_os{textPortion}
+        </pre>
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
-  const [message, setMessage] = useState<string>("")
-  const [options, setOptions] = useState<Option[]>([])
-  const [refinedMessage, setRefinedMessage] = useState<string>("")
-  const [tweetLink, setTweetLink] = useState<string>("")
-  const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState<ApiError | null>(null)
-  const [tweetLoading, setTweetLoading] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>("");
+  const [options, setOptions] = useState<Option[]>([]);
+  const [refinedMessage, setRefinedMessage] = useState<string>("");
+  const [tweetLink, setTweetLink] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<ApiError | null>(null);
+  const [tweetLoading, setTweetLoading] = useState<boolean>(false);
+
+  // Effect for handling scroll after message is refined
+  useEffect(() => {
+    if (refinedMessage) {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  }, [refinedMessage]);
+
+  // Effect for handling tweet link opening
+  useEffect(() => {
+    if (tweetLink) {
+      const timer = setTimeout(() => {
+        window.open(tweetLink, "_blank", "noopener,noreferrer");
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [tweetLink]);
+
 
   const handleGenerate = async () => {
     if (!message.trim()) {
@@ -148,7 +190,7 @@ export default function Home() {
       if (res.data.link) {
         setTweetLink(res.data.link)
         // Open the Twitter intent URL in a new window
-        window.open(res.data.link, "_blank", "noopener,noreferrer")
+        setTweetLink(res.data.link) // window.open is now handled by useEffect
       } else {
         setError({
           error: "Invalid response format",
@@ -177,72 +219,74 @@ export default function Home() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-24">
+    <main className="min-h-screen flex flex-col items-center justify-between p-4 md:p-24">
       <div className="tweet-container">
-        <AsciiLogo />
+        {typeof window !== 'undefined' && (
+          <>
+            <AsciiLogo />
+            <div className="terminal-frame">
+              <div className="terminal-header">tweet</div>
+              <div className="terminal-content">
+                {/* Step 1: Input message */}
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="enter plain text here..."
+                  disabled={loading}
+                />
+                <div className="button-container">
+                  <button onClick={handleGenerate} disabled={loading}>
+                    <span className={loading ? "processing-text" : "button-text"}>
+                      {loading ? "making the call..." : "hear it from her"}
+                    </span>
+                  </button>
+                </div>
 
-        <div className="terminal-frame">
-          <div className="terminal-header">tweet</div>
+                {/* Step 3: Display options */}
+                {options.length > 0 && (
+                  <div className="options-container">
+                    <ul className="options-list">
+                      {options.map((opt, i) => {
+                        // Extract the text without the ID part
+                        const textWithoutId = opt.text.replace(/\s*\[[A-Z0-9]+\]$/, "")
 
-          {/* Step 1: Input message */}
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="enter plain text here..."
-            disabled={loading}
-          />
-          <div className="button-container">
-            <button onClick={handleGenerate} disabled={loading}>
-              <span className={loading ? "processing-text" : "button-text"}>
-                {loading ? "making the call..." : "hear it from her"}
-              </span>
-            </button>
-          </div>
-        </div>
-
-        {/* Step 3: Display options */}
-        {options.length > 0 && (
-          <div>
-            <h2>$ cat options.txt</h2>
-            <ul>
-              {options.map((opt, i) => {
-                // Extract the text without the ID part
-                const textWithoutId = opt.text.replace(/\s*\[[A-Z0-9]+\]$/, "")
-
-                return (
-                  <li key={i}>
-                    {textWithoutId}{" "}
-                    <div className="button-group">
-                      <button
-                        onClick={() => handleRefine(i + 1, "shorten but retain meaning, make language simpler")}
-                        disabled={loading}
-                        className="modify-button"
-                      >
-                        Modify
-                      </button>
-                      <button
-                        onClick={() => {
-                          setRefinedMessage(textWithoutId)
-                          window.scrollTo(0, document.body.scrollHeight)
-                        }}
-                        disabled={loading}
-                        className="select-button"
-                      >
-                        Select
-                      </button>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
+                        return (
+                          <li key={`option-${i}-${opt.text.slice(0, 20)}`} className="option-item">
+                            <div className="option-text">{textWithoutId}</div>
+                            <div className="button-group">
+                              <button
+                                onClick={() => handleRefine(i + 1, "shorten but retain meaning, make language simpler")}
+                                disabled={loading}
+                                className="modify-button"
+                              >
+                                Modify
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setRefinedMessage(textWithoutId)
+                                  // Scroll will be handled by useEffect
+                                }}
+                                disabled={loading}
+                                className="select-button"
+                              >
+                                Select
+                              </button>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
         )}
 
         {/* Step 4: Show refined message */}
         {refinedMessage && (
-          <div>
-            <h2>$ cat final_tweet.txt</h2>
+          <div className="refined-container">
             <div className="refined-message">{refinedMessage.replace(/\s*\[[A-Z0-9]+\]$/, "")}</div>
             <button onClick={handleTweet} disabled={loading || tweetLoading}>
               {tweetLoading ? (
