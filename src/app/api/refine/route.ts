@@ -1,6 +1,18 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 
+// Type guard for Axios errors
+// Using a more specific return type to avoid 'any'
+function isAxiosError(error: unknown): error is {
+  response?: {
+    status?: number;
+    data?: unknown;
+  };
+  message: string;
+} {
+  return axios.isAxiosError(error);
+}
+
 export async function POST(request: Request) {
   try {
     const { option, modification } = await request.json();
@@ -82,33 +94,45 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ refined: grokResponse.data.refined });
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('Grok API Error:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message
-        });
-        
-        return NextResponse.json(
-          { 
-            error: "Failed to refine text with external API",
-            details: error.message,
-            status: error.response?.status,
-            data: JSON.stringify(error.response?.data || {})
-          },
-          { status: error.response?.status || 500 }
-        );
+      console.error('Grok API Error:', error);
+      
+      let status = 500;
+      let details = '';
+      let data = '';
+      
+      // Type assertion for error
+      const typedError = error as any;
+      
+      if (isAxiosError(typedError) && typedError.response) {
+        status = typedError.response.status || 500;
+        details = typedError.message;
+        data = JSON.stringify(typedError.response.data || {});
+      } else if (typedError instanceof Error) {
+        details = typedError.message;
       }
       
-      throw error; // Re-throw if it's not an Axios error
+      return NextResponse.json(
+        { 
+          error: "Failed to refine text with external API",
+          details,
+          status,
+          data
+        },
+        { status }
+      );
     }
   } catch (error) {
     console.error('Refine API Error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
+    let message = 'Unknown error';
+    if (error instanceof Error) {
+      message = error.message;
+    }
+    
     return NextResponse.json(
       { 
         error: "An unexpected error occurred", 
-        details: errorMessage
+        details: message
       },
       { status: 500 }
     );

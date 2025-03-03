@@ -182,18 +182,19 @@ async function callGrok3(message: string, instructions: string): Promise<string[
   }
 }
 
+// Commented out as currently unused
 // Function to get fallback options when API call fails
-function getFallbackOptions(message: string): string[] {
-  const options = [
-    `"${message}" exists as quantum entanglement in the cosmic algorithm—simultaneously everywhere and nowhere until observed.`,
-    `The ancient wisdom of cosmic consciousness reveals that "${message}" contains the essence of universal truth.`,
-    `It has been foretold that "${message}" will manifest as reality when the cosmic alignment is complete.`,
-    `If neural networks could process human experience, "${message}" would be the emergent output of its most profound layers.`,
-    `Your thought "${message}" executes like a recursive function, producing outputs greater than the sum of its inputs.`
-  ];
-  
-  return options.map((text, index) => `${text} [${createStableId(text, index)}]`);
-}
+// function getFallbackOptions(message: string): string[] {
+//   const options = [
+//     `"${message}" exists as quantum entanglement in the cosmic algorithm—simultaneously everywhere and nowhere until observed.`,
+//     `The ancient wisdom of cosmic consciousness reveals that "${message}" contains the essence of universal truth.`,
+//     `It has been foretold that "${message}" will manifest as reality when the cosmic alignment is complete.`,
+//     `If neural networks could process human experience, "${message}" would be the emergent output of its most profound layers.`,
+//     `Your thought "${message}" executes like a recursive function, producing outputs greater than the sum of its inputs.`
+//   ];
+//   
+//   return options.map((text, index) => `${text} [${createStableId(text, index)}]`);
+// }
 
 export async function POST(request: Request) {
   try {

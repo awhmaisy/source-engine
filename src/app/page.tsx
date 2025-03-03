@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import axios from "axios"
-import "./globals.css"
 
 interface Option {
   text: string

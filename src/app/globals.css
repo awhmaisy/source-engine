@@ -1,18 +1,15 @@
-@import "tailwindcss";
-
-@theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --foreground-rgb: 255, 255, 255;
   --background-rgb: 0, 0, 0;
   --card-bg: #111111;
   --card-text: #ffffff;
-  --button-bg: #222222;
+  --button-bg: #050505;
   --button-text: white;
-  --button-hover: #333333;
+  --button-hover: #0f0f0f;
   --error: #ffffff;
   --error-bg: #333333;
   --code-bg: #222222;
@@ -20,6 +17,8 @@
   --border-color: #333333;
   --ascii-color: #ffffff;
   --terminal-green: #ffffff;
+  --font-sans: 'Geist Sans', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', monospace;
 }
 
 body {
@@ -29,7 +28,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .tweet-container {
