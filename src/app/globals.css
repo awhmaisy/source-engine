@@ -1,0 +1,420 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 0, 0, 0;
+  --card-bg: #111111;
+  --card-text: #ffffff;
+  --button-bg: #222222;
+  --button-text: white;
+  --button-hover: #333333;
+  --error: #ffffff;
+  --error-bg: #333333;
+  --code-bg: #222222;
+  --link-color: #ffffff;
+  --border-color: #333333;
+  --ascii-color: #ffffff;
+  --terminal-green: #ffffff;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #000000;
+  font-family: var(--font-mono), "Geist Mono", monospace;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-size: 0.9rem;
+}
+
+.tweet-container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.ascii-header {
+  color: var(--ascii-color);
+  font-family: "Geist Mono", var(--font-mono), monospace;
+  white-space: pre;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
+
+@media (min-width: 640px) {
+  .ascii-header {
+    font-size: 0.7rem;
+  }
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: rgb(var(--foreground-rgb));
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: rgb(var(--foreground-rgb));
+  border-left: 2px solid var(--border-color);
+  padding-left: 0.5rem;
+}
+
+input {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  background-color: rgba(0, 0, 0, 0.2);
+  color: var(--foreground-rgb);
+  font-family: var(--font-mono), "Geist Mono", monospace;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+}
+
+input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) inset;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Button styles */
+button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 8px;
+  font-family: var(--font-mono), "Geist Mono", monospace;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  background-color: var(--button-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+button:disabled {
+  background-color: rgba(255, 255, 255, 0.05);
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Generate Options button */
+.generate-options-button {
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  color: white;
+  font-family: var(--font-sans), "Geist Sans", sans-serif;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.generate-options-button::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+  z-index: -1;
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 9999px;
+}
+
+.generate-options-button:hover::before {
+  opacity: 0.8;
+}
+
+.generate-options-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 0, 255, 0.3);
+}
+
+/* Button group for tweet options */
+.button-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.modify-button {
+  background-color: #333333;
+  border-radius: 9999px;
+}
+
+.modify-button:hover {
+  background-color: #444444;
+  transform: translateY(-1px);
+}
+
+.select-button {
+  border-radius: 9999px;
+}
+
+.select-button:hover {
+  transform: translateY(-1px);
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+li {
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border-left: 2px solid #333333;
+  position: relative;
+  font-size: 0.85rem;
+}
+
+li::before {
+  content: "$ ";
+  color: var(--terminal-green);
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+.error-container {
+  background-color: var(--error-bg);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-left: 2px solid #555555;
+}
+
+.error-message {
+  color: var(--error);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.error-details {
+  color: var(--error);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  opacity: 0.8;
+}
+
+details {
+  margin-top: 0.5rem;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--error);
+  font-size: 0.8rem;
+}
+
+.error-data {
+  background-color: var(--code-bg);
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-family: var(--font-mono), "Geist Mono", monospace;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.refined-message {
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-color);
+  position: relative;
+  font-size: 0.85rem;
+}
+
+.refined-message::before {
+  content: ">> ";
+  color: var(--terminal-green);
+}
+
+.tweet-link {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border: 1px dashed var(--border-color);
+  border-radius: 0.25rem;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+/* Button text styling for consistent size */
+.button-text {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  font-weight: 400;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  padding: 0;
+  margin: 0;
+  min-width: 140px;
+}
+
+/* Processing text styling */
+.processing-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.5px;
+  font-weight: 400;
+  opacity: 0.9;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  min-width: 140px;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Loading dots animation */
+.loading-dots::after {
+  display: inline-block;
+  animation: loading 1.5s infinite ease;
+  content: "";
+  min-width: 12px;
+  text-align: left;
+  opacity: 0.8;
+  position: relative;
+  top: 0;
+}
+
+@keyframes loading {
+  0% {
+    content: "";
+  }
+  25% {
+    content: "·";
+  }
+  50% {
+    content: "··";
+  }
+  75% {
+    content: "···";
+  }
+}
+
+/* Add a subtle fade animation to the button when processing */
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Remove glass button styles */
+/* .glass-button-wrap.disabled button {
+  animation: subtle-pulse 2s infinite ease-in-out;
+} */
+
+.terminal-frame {
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  background-color: transparent;
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Remove the terminal header */
+.terminal-header {
+  display: none;
+}
+
+/* Button container */
+.button-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+  height: auto;
+  min-height: 45px;
+  margin-top: 8px;
+}
+
+/* Remove glass button styles */
+/* .glass-button-wrap,
+.glass-button-wrap.disabled,
+.glass-button-shadow {
+  display: none;
+} */
